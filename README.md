@@ -1,71 +1,52 @@
-# 📚 PDF RAG Chatbot using Ollama, LangChain & ChromaDB
+# 📚 BookMind AI – PDF RAG Chatbot
 
-A local Retrieval-Augmented Generation (RAG) application built using:
+A locally powered **Retrieval-Augmented Generation (RAG)** application that allows users to upload PDF books and interact with their content through natural language questions.
 
-- Ollama
-- Llama 3.2
-- Nomic Embeddings
-- LangChain
-- ChromaDB
-- Streamlit
+Built using **Python, LangChain, Ollama, ChromaDB, and Streamlit**, the application retrieves relevant passages from uploaded documents and uses a locally running LLM to generate context-aware answers.
 
-Users can upload PDF books and ask questions about the content. The application retrieves relevant information from the document and generates answers using a local LLM.
+Instead of relying on the model's general knowledge, BookMind AI grounds its responses in the retrieved document content.
 
 ---
 
-# 🚀 Features
+## ✨ Features
 
-✅ Upload any PDF
-
-✅ Automatic text extraction
-
-✅ Text chunking
-
-✅ Vector embeddings
-
-✅ ChromaDB vector storage
-
-✅ Semantic search
-
-✅ Question answering with Llama 3.2
-
-✅ Fully local (No OpenAI API required)
-
-✅ Streamlit UI
+- 📄 **PDF Upload:** Upload your own PDF books through the Streamlit interface.
+- 📖 **Document Loading:** Extract text and metadata from PDF documents using PyPDFLoader.
+- ✂️ **Text Chunking:** Split large documents into smaller, manageable chunks.
+- 🧠 **Text Embeddings:** Generate vector representations using Nomic Embeddings.
+- 💾 **Vector Storage:** Store document embeddings in ChromaDB.
+- 🔍 **Semantic Retrieval:** Retrieve relevant document chunks using vector similarity and MMR.
+- 🤖 **AI-Powered Question Answering:** Generate answers using Llama 3.2.
+- 💬 **Interactive Chat Interface:** Ask questions and interact with your uploaded book.
+- 🔒 **Local Processing:** Run the LLM and embedding models locally using Ollama.
+- 🚫 **No OpenAI API Required:** No OpenAI API key or cloud-based LLM service is needed.
 
 ---
 
-# 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-Frontend:
-- Streamlit
-
-LLM:
-- Ollama
-- Llama 3.2
-
-Embeddings:
-- nomic-embed-text
-
-Framework:
-- LangChain
-
-Vector Database:
-- ChromaDB
-
-Document Loader:
-- PyPDFLoader
+| Category | Technology |
+|---|---|
+| Programming Language | Python |
+| Frontend / UI | Streamlit |
+| LLM | Llama 3.2 |
+| Local Model Runtime | Ollama |
+| Embedding Model | nomic-embed-text |
+| LLM Framework | LangChain |
+| Vector Database | ChromaDB |
+| Document Loader | PyPDFLoader |
+| Text Splitter | RecursiveCharacterTextSplitter |
+| Retrieval Strategy | Maximum Marginal Relevance (MMR) |
 
 ---
 
-# 📂 Project Structure
+## 📂 Project Structure
 
-RAG_Project
+```text
+RAG_Project/
 │
-├── app.py
-├── create_database.py
 ├── main.py
-│
+├── create_database.py
 ├── chroma_db/
 │
 ├── document_loaders/
@@ -73,76 +54,96 @@ RAG_Project
 │
 ├── .venv/
 │
+├── pyproject.toml
+├── uv.lock
 └── README.md
+```
+
+**File responsibilities:**
+
+- `main.py` – Streamlit interface, PDF upload, document retrieval, and question answering.
+- `create_database.py` – PDF loading, text splitting, embedding generation, and ChromaDB storage.
+- `chroma_db/` – Persistent vector database containing processed document embeddings.
+- `document_loaders/` – Example PDF documents for testing.
 
 ---
 
-# ⚙️ Installation
+## ⚙️ Installation and Setup
 
-## Clone Repository
+### 1. Clone the Repository
 
 ```bash
 git clone <repository-url>
 cd RAG_Project
 ```
 
-## Create Virtual Environment
+### 2. Create a Virtual Environment
+
+Using UV:
 
 ```bash
 uv venv
 ```
 
-Activate Environment:
+Activate the environment.
 
-```bash
-source .venv/Scripts/activate
+**Windows PowerShell:**
+
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
----
+**Windows CMD:**
 
-# 📦 Install Dependencies
-
-```bash
-uv pip install streamlit langchain langchain-community langchain-text-splitters langchain-ollama chromadb pypdf
+```cmd
+.venv\Scripts\activate.bat
 ```
 
----
+**Linux / macOS:**
 
-# 🤖 Install Ollama
+```bash
+source .venv/bin/activate
+```
 
-Download from:
+### 3. Install Dependencies
+
+```bash
+uv add streamlit langchain-core langchain-community langchain-ollama langchain-text-splitters chromadb pypdf
+```
+
+### 4. Install Ollama
+
+Download and install Ollama:
 
 https://ollama.com/download
 
-Verify installation:
+Verify the installation:
 
 ```bash
 ollama --version
 ```
 
----
+### 5. Download Required Models
 
-# 📥 Download Required Models
-
-## Llama 3.2
+**Llama 3.2 – Language Model**
 
 ```bash
 ollama pull llama3.2
 ```
 
-## Embedding Model
+**Nomic Embed Text – Embedding Model**
 
 ```bash
 ollama pull nomic-embed-text
 ```
 
-Verify:
+Verify that both models are available:
 
 ```bash
 ollama list
 ```
 
-Expected Output:
+Expected models:
 
 ```text
 llama3.2
@@ -151,122 +152,259 @@ nomic-embed-text
 
 ---
 
-# 🏗 Workflow
+## 🏗️ RAG Architecture and Workflow
+
+BookMind AI follows a two-stage RAG architecture:
+
+1. Document Indexing
+2. Retrieval and Answer Generation
+
+### Stage 1: Document Indexing Pipeline
+
+When a user uploads a PDF book, the application processes it and creates a searchable vector database.
 
 ```text
-User Uploads PDF
-        ↓
-PyPDFLoader
-        ↓
-RecursiveCharacterTextSplitter
-        ↓
-Ollama Embeddings
-        ↓
-ChromaDB
-        ↓
-Retriever
-        ↓
-Llama 3.2
-        ↓
-Final Answer
+        User Uploads PDF
+                |
+                v
+          PyPDFLoader
+                |
+                v
+       Extract Document Text
+                |
+                v
+  RecursiveCharacterTextSplitter
+                |
+                v
+          Text Chunks
+                |
+                v
+       Ollama Embeddings
+       (nomic-embed-text)
+                |
+                v
+       Generate Vectors
+                |
+                v
+            ChromaDB
+                |
+                v
+       Persistent Storage
 ```
+
+**Step-by-step explanation:**
+
+1. **Document Loading:** PyPDFLoader extracts text and metadata from the uploaded PDF.
+2. **Text Splitting:** RecursiveCharacterTextSplitter divides the extracted text into smaller chunks.
+3. **Embedding Generation:** Nomic Embeddings converts each chunk into a numerical vector representation.
+4. **Vector Storage:** ChromaDB stores the generated embeddings along with their corresponding document content and metadata.
+
+The resulting vector database is used for retrieving relevant information when the user asks a question.
+
+### Stage 2: Retrieval and Generation Pipeline
+
+When the user asks a question, the application searches the vector database for relevant document chunks.
+
+```text
+          User Question
+                |
+                v
+       Query Embedding
+                |
+                v
+       ChromaDB Retriever
+                |
+                v
+        MMR Retrieval
+                |
+                v
+    Retrieve Relevant Chunks
+                |
+                v
+       Retrieved Context
+                |
+                v
+       Prompt Construction
+                |
+                v
+          Llama 3.2
+                |
+                v
+       Context-Based Answer
+                |
+                v
+        Streamlit Chat UI
+```
+
+**Step-by-step explanation:**
+
+1. **User Query:** The user enters a question through the Streamlit chat interface.
+2. **Query Embedding:** The question is converted into a vector using the same embedding model.
+3. **Retrieval:** ChromaDB searches for relevant document chunks.
+4. **MMR Search:** Maximum Marginal Relevance retrieves relevant and diverse chunks to reduce redundant context.
+5. **Context Construction:** The retrieved text is combined with the user's question.
+6. **Prompt Engineering:** A prompt instructs the LLM to answer only using the supplied context.
+7. **Answer Generation:** Llama 3.2 generates a response using the retrieved information.
+8. **Response Display:** The generated answer is displayed in the Streamlit interface.
 
 ---
 
-# 📄 PDF Processing
+## 🔧 Core Implementation
+
+### 1. PDF Document Loading
 
 ```python
-loader = PyPDFLoader(pdf_path)
+from langchain_community.document_loaders import PyPDFLoader
+
+loader = PyPDFLoader("document_loaders/deep-learning.pdf")
+
 docs = loader.load()
 ```
 
----
+Loads the PDF and extracts its text into LangChain Document objects.
 
-# ✂️ Text Chunking
+### 2. Text Chunking
 
 ```python
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1500,
-    chunk_overlap=300
+    chunk_size=1000,
+    chunk_overlap=200
 )
+
+chunks = splitter.split_documents(docs)
 ```
 
----
+- `chunk_size=1000`: Maximum target size of each chunk.
+- `chunk_overlap=200`: Preserves overlapping content between consecutive chunks.
 
-# 🧠 Create Embeddings
+Chunking helps the retriever find relevant sections instead of processing an entire book at once.
+
+### 3. Embedding Generation
 
 ```python
-embeddings = OllamaEmbeddings(
+from langchain_ollama import OllamaEmbeddings
+
+embeddings_model = OllamaEmbeddings(
     model="nomic-embed-text"
 )
 ```
 
----
+Converts document text into vector representations that capture semantic meaning.
 
-# 💾 Store Embeddings in ChromaDB
+### 4. Vector Database Creation
 
 ```python
+from langchain_community.vectorstores import Chroma
+
 vectorstore = Chroma.from_documents(
     documents=chunks,
-    embedding=embeddings
+    embedding=embeddings_model,
+    persist_directory="chroma_db"
 )
 ```
 
----
+Stores document chunks and their embeddings in ChromaDB for retrieval.
 
-# 🔍 Retrieval
+### 5. MMR-Based Retrieval
 
 ```python
 retriever = vectorstore.as_retriever(
-    search_type="similarity",
-    search_kwargs={"k":4}
+    search_type="mmr",
+    search_kwargs={
+        "k": 4,
+        "fetch_k": 10,
+        "lambda_mult": 0.5
+    }
 )
 ```
 
----
+**Retrieval parameters:**
 
-# 🤖 LLM Configuration
+- `k=4`: Returns four selected chunks.
+- `fetch_k=10`: Initially considers ten candidate chunks.
+- `lambda_mult=0.5`: Balances relevance and diversity.
+
+MMR helps retrieve useful information while reducing repetitive context.
+
+### 6. LLM Configuration
 
 ```python
+from langchain_ollama import ChatOllama
+
 llm = ChatOllama(
     model="llama3.2",
-    temperature=0.7
+    temperature=0.2
 )
 ```
 
----
+Uses Llama 3.2 locally to generate answers based on retrieved document context.
 
-# ▶️ Running Streamlit Application
+### 7. Context-Based Prompting
 
-```bash
-streamlit run app.py
+The application uses a prompt that restricts the model to the retrieved document content.
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+
+prompt = ChatPromptTemplate.from_messages([
+    (
+        "system",
+        """
+        You are a helpful AI assistant.
+
+        Answer ONLY from the provided context.
+
+        If the answer cannot be found in the context,
+        respond exactly with:
+
+        I could not find the answer in the document.
+
+        Do not use your own knowledge.
+        Do not guess.
+        """
+    ),
+    (
+        "human",
+        """
+        Context:
+        {context}
+
+        Question:
+        {question}
+        """
+    )
+])
 ```
 
-OR
-
-```bash
-uv run streamlit run app.py
-```
+This instruction helps reduce unsupported answers and keeps responses grounded in the retrieved context.
 
 ---
 
-# 🌐 Open Browser
+## ▶️ Running the Application
 
-Streamlit will generate:
+Make sure Ollama is installed and both required models have been downloaded.
+
+Start the Streamlit application:
+
+```bash
+uv run streamlit run main.py
+```
+
+Open the following URL in your browser:
 
 ```text
 http://localhost:8501
 ```
 
-Open the URL in your browser.
-
 ---
 
-# 📖 How to Use
+## 📖 How to Use
 
-### Step 1
+**Step 1 – Upload a PDF**
 
-Upload a PDF
+Open the application and upload a PDF book using the sidebar.
 
 Example:
 
@@ -274,174 +412,182 @@ Example:
 deep-learning.pdf
 ```
 
-### Step 2
+**Step 2 – Build Knowledge Base**
 
-Wait until:
+Click the **Build Knowledge Base** button.
 
-```text
-PDF processed successfully!
-```
+The application will:
 
-appears.
+- Load the PDF.
+- Extract its text.
+- Split the content into chunks.
+- Generate embeddings.
+- Store the vectors in ChromaDB.
 
-### Step 3
+**Step 3 – Start Chatting**
 
-Ask Questions
+Once the knowledge base is ready, enter your question in the chat input.
 
-Examples:
+Example questions:
 
 ```text
 What is Word2Vec?
 ```
 
 ```text
-Explain CBOW.
+Explain the CBOW architecture.
 ```
 
 ```text
-What is the Skip-Gram model?
+What is the difference between CBOW and Skip-Gram?
 ```
 
 ```text
-Summarize Chapter 8.
+Explain the Skip-Gram model with an example.
 ```
 
 ```text
-Who introduced Word2Vec?
+Summarize the main concepts of Chapter 8.
 ```
+
+The application retrieves relevant passages and generates an answer using Llama 3.2.
 
 ---
 
-# 🐞 Common Errors and Fixes
+## 🐞 Common Errors and Solutions
 
-## Ollama Connection Error
+### 1. Ollama Connection Error
 
-Error:
+**Error:**
 
 ```text
-connection refused
+Connection refused
 ```
 
-Fix:
+**Solution:**
+
+Make sure Ollama is running.
 
 ```bash
 ollama serve
 ```
 
----
+If Ollama is already running as a background service, you do not need to start another instance.
 
-## Model Not Found
+### 2. Model Not Found
 
-Error:
+**Error:**
 
 ```text
 model not found
 ```
 
-Fix:
+**Solution:**
+
+Download the required model:
 
 ```bash
 ollama pull llama3.2
-```
-
-or
-
-```bash
 ollama pull nomic-embed-text
 ```
 
----
+### 3. PDF Loading Error
 
-## PDF Not Loading
-
-Error:
+**Error:**
 
 ```text
 FileNotFoundError
 ```
 
-Verify PDF path:
+**Solution:**
 
-```python
-document_loaders/deep-learning.pdf
+Check the PDF path and ensure that the uploaded file is valid and accessible.
+
+### 4. Embedding Model Error
+
+**Solution:**
+
+Verify that the embedding model is installed:
+
+```bash
+ollama list
 ```
 
----
+If it is missing:
 
-## OneDrive Installation Issues
+```bash
+ollama pull nomic-embed-text
+```
 
-Avoid creating projects inside:
+### 5. OneDrive Installation Issues
+
+For fewer file synchronization and virtual environment issues, consider keeping your project outside OneDrive.
+
+Example:
 
 ```text
-OneDrive/Desktop
+C:\Projects\RAG_Project
 ```
-
-Use:
-
-```text
-C:\Projects
-```
-
-instead.
 
 ---
 
-# 📈 Future Improvements
+## 🚀 Future Improvements
 
-- Chat History
-- Multiple PDF Uploads
-- Citation Sources
-- Page Number References
-- Conversational Memory
-- Multiple Document Support
-- Hybrid Search
-- Re-ranking
-- Dark / Light Themes
-- Persistent Chat Sessions
+Potential enhancements planned for the project:
+
+- [ ] Multiple PDF Upload Support
+- [ ] Source Citations with Page Numbers
+- [ ] Display Retrieved Document Chunks
+- [ ] Conversational Memory
+- [ ] Chat History Persistence
+- [ ] Hybrid Search (Keyword + Semantic Search)
+- [ ] Re-ranking Retrieved Documents
+- [ ] Support for DOCX and EPUB Files
+- [ ] OCR Support for Scanned PDFs
+- [ ] Improved Document Management
+- [ ] Dark and Light Themes
 
 ---
 
-# 🎯 Learning Outcomes
+## 🎯 Learning Outcomes
 
-This project demonstrates:
+Through this project, I explored and implemented important concepts in Generative AI and Retrieval-Augmented Generation:
 
-- Document Loading
-- Text Chunking
-- Embeddings
+- Retrieval-Augmented Generation (RAG)
+- Document Loading and Processing
+- Recursive Text Splitting
+- Text Embeddings
 - Vector Databases
 - ChromaDB
 - Semantic Search
-- Retriever Design
+- Maximum Marginal Relevance (MMR)
+- Information Retrieval
 - Prompt Engineering
+- Local LLM Integration
 - LangChain
 - Ollama
-- Streamlit
-- Retrieval-Augmented Generation (RAG)
+- Streamlit Application Development
 
 ---
 
-# 👨‍💻 Author
+## 👩‍💻 Author
 
-Nargis
+**Nargis**
 
-Built while learning:
-
-- LangChain
-- Ollama
-- ChromaDB
-- Streamlit
-- Retrieval-Augmented Generation (RAG)
+Computer Science Engineering Student | Exploring Generative AI and AI Engineering
 
 ---
 
-# 🏆 Project Summary
+## 🏁 Project Summary
 
-This project allows users to upload PDF books and ask questions about the document contents. The system uses Ollama Embeddings to generate vector representations, stores them in ChromaDB, retrieves relevant chunks, and uses Llama 3.2 to answer questions from the uploaded book.
+**BookMind AI** demonstrates how Retrieval-Augmented Generation can make PDF books interactive and searchable.
 
-Fully Local ✅
+By combining LangChain, Ollama, Nomic Embeddings, and ChromaDB, the application creates a local document-question-answering system that retrieves relevant information from uploaded books and generates context-aware responses.
 
-No OpenAI API Required ✅
+**Built with:** Python · LangChain · Ollama · ChromaDB · Streamlit
 
-No Internet Required After Setup ✅
+**Local LLM:** Llama 3.2
 
-Powered by Ollama + LangChain + ChromaDB + Streamlit ✅
+**Embedding Model:** nomic-embed-text
+
+**No OpenAI API Required.**
